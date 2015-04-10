@@ -6,6 +6,8 @@
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore.js"></script>
     <script src="bower_components/backbone/backbone.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
     <script src="data/data.js"></script>
 
@@ -24,14 +26,32 @@
       $(function(){
         // set up model objects
         var library = new Songs(songData);
+
         var app = new AppModel({library: library});
 
         // build a view for the top level of the whole app
         var appView = new AppView({model: app});
 
         // put the view onto the screen
-        $('body').append(appView.render());
+
+        $('.row').append(appView.render());
+
+        if(window.localStorage.songQueue) {
+          var localSongQueue = JSON.parse(window.localStorage.songQueue);
+
+          localSongQueue.forEach(function(song) {
+            library.models.forEach(function(model) {
+              if (song.url === model.get('url')) {
+                model.enqueue();
+              }
+            })
+          });
+        }
+
       });
     </script>
+    <div class = "container">
+    <div class = "row" style="margin-left :30%; margin-right: 30%; margin-top: 10%"></div>
+    </div>
   </body>
 </html>
